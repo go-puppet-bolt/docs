@@ -9,7 +9,7 @@ dependency on Ruby or on a C toolchain.
 
 ## Static, portable, embeddable
 
-Because it is pure Go and imports the Go standard library plus the fleet's pure-Go YAML loader ([go-ruby-yaml/yaml](https://github.com/go-ruby-yaml/yaml)), go-puppet-bolt compiles with cgo disabled,
+Because it is pure Go — imports the Go standard library and a few pure-Go dependencies ([go-ruby-yaml/yaml](https://github.com/go-ruby-yaml/yaml) for inventory/plan YAML, [golang.org/x/crypto/ssh](https://pkg.go.dev/golang.org/x/crypto/ssh) for the SSH transport, [go-ntlmssp](https://github.com/Azure/go-ntlmssp) for WinRM NTLM, and [go-puppet/puppet](https://github.com/go-puppet/puppet) for `.pp` plans and catalog compilation) — go-puppet-bolt compiles with cgo disabled,
 cross-compiles to every 64-bit Go target (amd64, arm64, riscv64, loong64, ppc64le, s390x) and to WebAssembly, and links
 into a single static binary. There is nothing to install alongside it — no shared
 library, no interpreter, no external process it must shell out to.
