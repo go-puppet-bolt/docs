@@ -525,7 +525,7 @@ and <a href="https://github.com/go-puppet">go-puppet</a>) that provide Puppet-ec
 capabilities as ordinary Go libraries, with <strong><code>CGO_ENABLED=0</code></strong> and no runtime
 dependency on Ruby or on a C toolchain.</p>
 <h2 id="static-portable-embeddable">Static, portable, embeddable<a class="headerlink" href="#static-portable-embeddable" title="Permanent link">&para;</a></h2>
-<p>Because it is pure Go and imports the Go standard library plus the fleet's pure-Go YAML loader (<a href="https://github.com/go-ruby-yaml/yaml">go-ruby-yaml/yaml</a>), go-puppet-bolt compiles with cgo disabled,
+<p>Because it is pure Go — imports the Go standard library and a few pure-Go dependencies (<a href="https://github.com/go-ruby-yaml/yaml">go-ruby-yaml/yaml</a> for inventory/plan YAML, <a href="https://pkg.go.dev/golang.org/x/crypto/ssh">golang.org/x/crypto/ssh</a> for the SSH transport, <a href="https://github.com/Azure/go-ntlmssp">go-ntlmssp</a> for WinRM NTLM, and <a href="https://github.com/go-puppet/puppet">go-puppet/puppet</a> for <code>.pp</code> plans and catalog compilation) — go-puppet-bolt compiles with cgo disabled,
 cross-compiles to every 64-bit Go target (amd64, arm64, riscv64, loong64, ppc64le, s390x) and to WebAssembly, and links
 into a single static binary. There is nothing to install alongside it — no shared
 library, no interpreter, no external process it must shell out to.</p>

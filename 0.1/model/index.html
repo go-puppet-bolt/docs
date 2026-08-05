@@ -382,18 +382,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#transports-executor" class="md-nav__link">
+  <a href="#puppet-language-pp-plans" class="md-nav__link">
     <span class="md-ellipsis">
-      Transports &amp; executor
+      Puppet-language (.pp) plans
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#ssh-winrm-puppet-language-plans-planned" class="md-nav__link">
+  <a href="#transports" class="md-nav__link">
     <span class="md-ellipsis">
-      SSH / WinRM &amp; Puppet-language plans ( planned )
+      Transports
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executor-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executor &amp; apply
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documented-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documented boundaries
     </span>
   </a>
   
@@ -521,18 +539,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#transports-executor" class="md-nav__link">
+  <a href="#puppet-language-pp-plans" class="md-nav__link">
     <span class="md-ellipsis">
-      Transports &amp; executor
+      Puppet-language (.pp) plans
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#ssh-winrm-puppet-language-plans-planned" class="md-nav__link">
+  <a href="#transports" class="md-nav__link">
     <span class="md-ellipsis">
-      SSH / WinRM &amp; Puppet-language plans ( planned )
+      Transports
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executor-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executor &amp; apply
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documented-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documented boundaries
     </span>
   </a>
   
@@ -561,10 +597,23 @@
 <p>Parses the Bolt task <code>*.json</code> metadata shape (typed <code>parameters</code>, <code>input_method</code>, <code>supports_noop</code>, <code>implementations</code>, <code>files</code>) and validates arguments against the declared parameter types.</p>
 <h2 id="yaml-plans">YAML plans<a class="headerlink" href="#yaml-plans" title="Permanent link">&para;</a></h2>
 <p><code>plan.yaml</code> <code>parameters</code> plus an ordered list of <code>task</code> / <code>command</code> / <code>script</code> / <code>eval</code> / <code>plan</code> / <code>resources</code> / <code>message</code> steps with <code>targets</code>, per-step parameters and a <code>return</code> expression, executed by a step runner.</p>
-<h2 id="transports-executor">Transports &amp; executor<a class="headerlink" href="#transports-executor" title="Permanent link">&para;</a></h2>
-<p>A <code>Transport</code> interface with a host-local <code>LocalTransport</code> driven through an injectable <code>CommandRunner</code> seam; an <code>Executor</code> runs a command, script or task across a set of targets, collecting a per-target <code>Result</code> into a <code>ResultSet</code>.</p>
-<h2 id="ssh-winrm-puppet-language-plans-planned">SSH / WinRM &amp; Puppet-language plans <em>( planned )</em><a class="headerlink" href="#ssh-winrm-puppet-language-plans-planned" title="Permanent link">&para;</a></h2>
-<p>Only <code>LocalTransport</code> ships (<code>Transport</code> is the extension point); SSH / WinRM transports, Puppet-language (<code>.pp</code>) plans, <code>apply</code> / <code>resources</code> steps and PuppetDB inventory references are documented deferrals.</p>
+<h2 id="puppet-language-pp-plans">Puppet-language (<code>.pp</code>) plans<a class="headerlink" href="#puppet-language-pp-plans" title="Permanent link">&para;</a></h2>
+<p><code>plan name(...) { ... }</code> manifests run through <a href="https://github.com/go-puppet/puppet"><code>github.com/go-puppet/puppet</code></a>: the <code>run_task</code> / <code>run_command</code> / <code>run_script</code> / <code>get_targets</code> / <code>apply</code> plan functions dispatch through this executor's transports and inventory to real targets (<code>Executor.RunPuppetPlan</code>).</p>
+<h2 id="transports">Transports<a class="headerlink" href="#transports" title="Permanent link">&para;</a></h2>
+<p>A <code>Transport</code> interface with three implementations:</p>
+<ul>
+<li><strong><code>LocalTransport</code></strong> — a host-local transport driven through an injectable <code>CommandRunner</code> seam.</li>
+<li><strong><code>SSHTransport</code></strong> — a full pure-Go SSH transport over <code>golang.org/x/crypto/ssh</code> that honours the target's <code>config.ssh</code> (user, port, key/password auth, host-key-check, run-as/sudo, tty, tmpdir) and uploads-then-runs scripts and tasks.</li>
+<li><strong><code>WinRMTransport</code></strong> — a full pure-Go WS-Management / MS-WSMV transport (SOAP over <code>net/http</code>) with <code>basic</code>, <code>negotiate</code> (NTLM via <code>github.com/Azure/go-ntlmssp</code>) and <code>ssl</code> (TLS client-certificate) auth, honouring <code>config.winrm</code>, that uploads-then-runs scripts and tasks on Windows.</li>
+</ul>
+<h2 id="executor-apply">Executor &amp; <code>apply</code><a class="headerlink" href="#executor-apply" title="Permanent link">&para;</a></h2>
+<p>An <code>Executor</code> runs a command, script or task across a set of targets, collecting a per-target <code>Result</code> into a <code>ResultSet</code>. For <code>apply</code> blocks and the YAML <code>resources</code> step, the manifest is compiled to a catalog via <code>go-puppet/puppet</code> and an apply <code>ResultSet</code> is produced (<code>Executor.ApplyCatalog</code>).</p>
+<h2 id="documented-boundaries">Documented boundaries<a class="headerlink" href="#documented-boundaries" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong><code>apply</code> execution</strong> — <code>ApplyCatalog</code> compiles the catalog and reports the resources it <em>would</em> enforce per target; it does not remotely enforce resources (that needs a Puppet agent on the target, Bolt's <code>apply_prep</code> model — out of scope for the agentless core).</li>
+<li><strong>WinRM Kerberos / CredSSP</strong> — only <code>basic</code>, <code>negotiate</code> and <code>ssl</code> auth are implemented; Kerberos (<code>realm</code>) is rejected with a clear error.</li>
+<li><strong>PuppetDB and other <code>_plugin</code> inventory resolvers</strong> — not implemented.</li>
+</ul>
 
 
 

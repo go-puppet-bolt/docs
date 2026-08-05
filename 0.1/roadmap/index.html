@@ -404,9 +404,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next" class="md-nav__link">
+  <a href="#documented-boundaries-not-silently-capped" class="md-nav__link">
     <span class="md-ellipsis">
-      Next
+      Documented boundaries (not silently capped)
     </span>
   </a>
   
@@ -476,9 +476,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next" class="md-nav__link">
+  <a href="#documented-boundaries-not-silently-capped" class="md-nav__link">
     <span class="md-ellipsis">
-      Next
+      Documented boundaries (not silently capped)
     </span>
   </a>
   
@@ -505,11 +505,15 @@
 <li><strong>Inventory (v2)</strong> — Targets, nested groups, per-group / per-target <code>config</code> / <code>facts</code> / <code>vars</code> / <code>features</code>, effective-value resolution through the hierarchy (deep merge, closest group wins, target overrides all), and target selection by name / alias / group / glob (<code>TargetsForQuery</code>).</li>
 <li><strong>Tasks</strong> — Parses the Bolt task <code>*.json</code> metadata shape (typed <code>parameters</code>, <code>input_method</code>, <code>supports_noop</code>, <code>implementations</code>, <code>files</code>) and validates arguments against the declared parameter types.</li>
 <li><strong>YAML plans</strong> — <code>plan.yaml</code> <code>parameters</code> plus an ordered list of <code>task</code> / <code>command</code> / <code>script</code> / <code>eval</code> / <code>plan</code> / <code>resources</code> / <code>message</code> steps with <code>targets</code>, per-step parameters and a <code>return</code> expression, executed by a step runner.</li>
-<li><strong>Transports &amp; executor</strong> — A <code>Transport</code> interface with a host-local <code>LocalTransport</code> driven through an injectable <code>CommandRunner</code> seam; an <code>Executor</code> runs a command, script or task across a set of targets, collecting a per-target <code>Result</code> into a <code>ResultSet</code>.</li>
+<li><strong>Puppet-language (<code>.pp</code>) plans</strong> — <code>plan name(...) { ... }</code> manifests run through <code>github.com/go-puppet/puppet</code>; the <code>run_task</code> / <code>run_command</code> / <code>run_script</code> / <code>get_targets</code> / <code>apply</code> plan functions dispatch through the executor's transports and inventory (<code>Executor.RunPuppetPlan</code>).</li>
+<li><strong>Transports</strong> — a <code>Transport</code> interface with a host-local <code>LocalTransport</code>, a full pure-Go <strong>SSH</strong> transport (<code>SSHTransport</code>, over <code>golang.org/x/crypto/ssh</code>) and a full pure-Go <strong>WinRM</strong> transport (<code>WinRMTransport</code>, WS-Management / MS-WSMV over <code>net/http</code>, with <code>basic</code> / <code>negotiate</code> (NTLM) / <code>ssl</code> auth).</li>
+<li><strong>Executor &amp; <code>apply</code></strong> — an <code>Executor</code> runs a command, script or task across a target set into a <code>ResultSet</code>; <code>apply</code> blocks and the <code>resources</code> step compile a catalog via <code>go-puppet/puppet</code> and produce an apply <code>ResultSet</code> (<code>Executor.ApplyCatalog</code>).</li>
 </ul>
-<h2 id="next">Next<a class="headerlink" href="#next" title="Permanent link">&para;</a></h2>
+<h2 id="documented-boundaries-not-silently-capped">Documented boundaries (not silently capped)<a class="headerlink" href="#documented-boundaries-not-silently-capped" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>SSH / WinRM &amp; Puppet-language plans</strong> — Only <code>LocalTransport</code> ships (<code>Transport</code> is the extension point); SSH / WinRM transports, Puppet-language (<code>.pp</code>) plans, <code>apply</code> / <code>resources</code> steps and PuppetDB inventory references are documented deferrals.</li>
+<li><code>apply</code> execution is compile-and-report only: it does not remotely enforce resources (that needs a Puppet agent on the target — Bolt's <code>apply_prep</code> model).</li>
+<li>WinRM Kerberos / CredSSP auth is not implemented (<code>basic</code> / <code>negotiate</code> / <code>ssl</code> are).</li>
+<li>PuppetDB and other <code>_plugin</code> inventory resolvers are not implemented.</li>
 </ul>
 <p>Quality is a standing gate: 100% coverage including error branches, <code>gofmt</code> + <code>go vet</code> clean, CI green across the six 64-bit Go targets (amd64, arm64, riscv64, loong64, ppc64le, s390x).</p>
 

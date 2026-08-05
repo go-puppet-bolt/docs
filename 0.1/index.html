@@ -480,8 +480,8 @@
 
 
 <h1 id="go-puppet-bolt">go-puppet-bolt<a class="headerlink" href="#go-puppet-bolt" title="Permanent link">&para;</a></h1>
-<p><strong>Puppet Bolt core in pure Go — inventory, tasks and YAML plans with a transport abstraction.</strong></p>
-<p>go-puppet-bolt is a pragmatic, pure-Go (CGO_ENABLED=0) port of the core of Puppet Bolt, the agentless orchestrator. It parses Bolt inventory, tasks and YAML plans and runs them through a pluggable transport — with no Ruby runtime and no cgo, so it cross-compiles to every 64-bit Go target and WebAssembly and links into a static binary. Inventory v2 resolves effective config / facts / vars through the group hierarchy and selects targets by name, alias, group or glob; tasks validate arguments against declared parameter types; YAML plans run an ordered sequence of task / command / script / eval / plan steps; and an Executor runs work across targets into a ResultSet. Its only dependency is the fleet's pure-Go YAML loader. 100% coverage, six arches.</p>
+<p><strong>Puppet Bolt core in pure Go — inventory, tasks, YAML and Puppet-language plans, and SSH / WinRM / local transports.</strong></p>
+<p>go-puppet-bolt is a pragmatic, pure-Go (CGO_ENABLED=0) port of the core of Puppet Bolt, the agentless orchestrator. It parses Bolt inventory, tasks and plans and runs them over pluggable transports — with no Ruby runtime and no cgo, so it cross-compiles to every 64-bit Go target and WebAssembly and links into a static binary. Inventory v2 resolves effective config / facts / vars through the group hierarchy and selects targets by name, alias, group or glob; tasks validate arguments against declared parameter types; YAML plans run an ordered sequence of task / command / script / eval / plan / resources / message steps; Puppet-language (<code>.pp</code>) plans run through go-puppet/puppet with their plan functions dispatched to real targets; <code>apply</code> blocks compile a catalog and report; and an Executor runs work across targets — over a host-local, a full SSH or a full WinRM transport — into a ResultSet. Its non-stdlib dependencies are all pure Go (the fleet's YAML loader, golang.org/x/crypto/ssh, go-ntlmssp and go-puppet/puppet). 100% coverage, six arches.</p>
 <ul>
 <li><strong><a href="why/">Why pure Go</a></strong> — a static, cgo-free engine for the Puppet stack.</li>
 <li><strong><a href="model/">Inventory, tasks &amp; plans</a></strong> — the capabilities in detail.</li>
@@ -490,8 +490,8 @@
 </ul>
 <h2 id="guarantees">Guarantees<a class="headerlink" href="#guarantees" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Pure Go, zero cgo.</strong> Imports the Go standard library plus the fleet's pure-Go YAML loader (go-ruby-yaml/yaml); cross-compiles to the six 64-bit Go targets (amd64, arm64, riscv64, loong64, ppc64le, s390x) and WebAssembly, linking into a static binary.</li>
-<li><strong>Faithful to Bolt's inventory v2, task metadata and YAML plan shapes.</strong></li>
+<li><strong>Pure Go, zero cgo.</strong> Imports the Go standard library and a few pure-Go dependencies (go-ruby-yaml/yaml, golang.org/x/crypto/ssh, go-ntlmssp, go-puppet/puppet); cross-compiles to the six 64-bit Go targets (amd64, arm64, riscv64, loong64, ppc64le, s390x) and WebAssembly, linking into a static binary.</li>
+<li><strong>Faithful to Bolt's inventory v2, task metadata, YAML and Puppet-language plan shapes.</strong></li>
 <li><strong>100% test coverage</strong> including error branches, enforced as a CI gate.</li>
 </ul>
 
